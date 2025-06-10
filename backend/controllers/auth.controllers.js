@@ -60,6 +60,47 @@ export const signup = async (req, res) => {
 
 }
 
+export const login = async (req, res) => {
+    try {
+        const {username, password} = req.body;
+        const user = await User.findOne({username});
+        const isPasswordValid = await bcrypt.compare(password, user?.password || "");
+
+        if(!username || !password) {
+            return res.status(400).json({message: "Username and password are required"});
+        }
+        if(!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        if(!isPasswordValid) {
+            return res.status(401).json({message: "Invalid password"});
+        }
+        generateTokenAndSetCookie(user._id, res);
+
+        return res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            username: user.username,
+            profilePicture: user.profilePicture,
+            message: "Login successful",
+            user
+        });
+
+    } catch (error) {
+        console.error("Error during login:", error);
+        return res.status(500).json({message: "Internal server error"});  
+    }
+}
+
+export const logout = async (req, res) => {
+    try {
+        res.cookie("jwt", "", {maxAge: 0})
+        return res.status(200).json({message: "Logout successful"});
+    } catch (error) {
+        console.error("Error during logout:", error);
+        return res.status(500).json({message: "Internal server error"});  
+    }
+}
 
 
 // continue from 52:21
