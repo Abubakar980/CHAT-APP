@@ -1,19 +1,23 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import authRouter from './routes/auth.routes.js';
-import mongoose from 'mongoose';
-import { connectMongoDB } from './db/db.connect.js';
 import cookieParser from 'cookie-parser';
 
+import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/user.routes.js';
+import messageRouter from './routes/message.routes.js';
+
+import { connectMongoDB } from './db/db.connect.js';
+
+dotenv.config();
 const PORT = process.env.PORT || 8000;
 const app = express()
 
-dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter)
-app.use
+app.use("/api/messages", messageRouter)
+app.use("/api/users", userRouter)
 
 app.listen(PORT, () => {
     connectMongoDB();

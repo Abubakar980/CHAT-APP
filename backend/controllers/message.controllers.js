@@ -49,7 +49,29 @@ export const sendMessage = async (req, res) => {
 };
 
 
+export const getMessages = async (req, res) => {
+  try {
+    const {id:userToChatId} = req.params;
+    const userId = req.user._id;
+    // Find the conversation between the two users
+    const conversation = await Conversation.findOne({
+      participants: { $all: [userId, userToChatId] }
+    }).populate("messages")  //  not reference but actual messages
+     
+    if(!conversation) {
+      return res.status(404).json({});
+    }
 
+    const messages = conversation.messages;
+
+    res.status(200).json(messages)
+
+    res.status(200).json(conversation.messages)
+  } catch (error) {
+    console.error("Error getting messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 
 // continue from 1:24:54
