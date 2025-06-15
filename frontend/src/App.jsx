@@ -1,13 +1,11 @@
-import SignUp from "./components/Pages/SignUp/SignUp"
+import Home from "./components/Pages/Home/Home";
 
 const App = () => {
   return (
-    <>
-      <div className='p-4 h-screen items-center justify-center'>
-        <SignUp/>
-      </div>
-    </>
-  )
-}
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <Home />
+    </div>
+  );
+};
 
-export default App
+export default App;
